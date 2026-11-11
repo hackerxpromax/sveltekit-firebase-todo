@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SvelteKit + Firebase Fullstack Todo - Live Deployed</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-[var(--background,#0b0f19)] text-[var(--foreground,#f1f5f9)] antialiased min-h-screen p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Header Hero: Live Status -->
+    <header class="bg-[var(--card,#111827)] border border-emerald-500/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono font-medium flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              Live Deployed: Free 100%
+            </span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-mono font-medium">
+              Firebase Classic Hosting
+            </span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 font-mono font-medium">
+              Cloud Firestore Native
+            </span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-[var(--foreground,#fff)] tracking-tight">
+            SvelteKit + Firebase Todo App Đang Hoạt Động!
+          </h1>
+          <p class="text-xs md:text-sm text-[var(--muted-foreground,#94a3b8)] max-w-2xl leading-relaxed">
+            Ứng dụng đã được triển khai lên hạ tầng Global CDN của Firebase Hosting, kết nối Cloud Firestore và Security Rules của project <code>planning-with-ai-57aa8</code> hoàn toàn miễn phí.
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+          <a href="https://planning-with-ai-57aa8.web.app" target="_blank" class="px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all">
+            <span>🚀 Mở Trang Web Live</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-[var(--border,#1f2937)] text-xs">
+        <div class="bg-[var(--background,#0b0f19)] p-3 rounded-xl border border-[var(--border,#1f2937)]">
+          <div class="text-[10px] text-slate-400">Hosting URL</div>
+          <div class="font-mono text-emerald-400 font-bold truncate mt-0.5">planning-with-ai-57aa8.web.app</div>
+        </div>
+        <div class="bg-[var(--background,#0b0f19)] p-3 rounded-xl border border-[var(--border,#1f2937)]">
+          <div class="text-[10px] text-slate-400">Chi phí duy trì</div>
+          <div class="font-mono text-emerald-400 font-bold mt-0.5">$0 (Spark Plan)</div>
+        </div>
+        <div class="bg-[var(--background,#0b0f19)] p-3 rounded-xl border border-[var(--border,#1f2937)]">
+          <div class="text-[10px] text-slate-400">Firestore Rules</div>
+          <div class="font-mono text-emerald-400 font-bold mt-0.5">Đã Active (Protected)</div>
+        </div>
+        <div class="bg-[var(--background,#0b0f19)] p-3 rounded-xl border border-[var(--border,#1f2937)]">
+          <div class="text-[10px] text-slate-400">PWA Offline</div>
+          <div class="font-mono text-blue-400 font-bold mt-0.5">Sẵn sàng</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Live Preview Frame / Quick Interactive Demo -->
+    <div class="bg-[var(--card,#111827)] border border-[var(--border,#1f2937)] rounded-2xl p-6 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="font-bold text-white text-base flex items-center gap-2">
+            <span>🌐</span> Trực Quan Trang Web Đang Chạy
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            Bạn có thể truy cập trực tiếp qua domain: <a href="https://planning-with-ai-57aa8.web.app" target="_blank" class="text-blue-400 underline font-mono">https://planning-with-ai-57aa8.web.app</a>
+          </p>
+        </div>
+        <a href="https://console.firebase.google.com/project/planning-with-ai-57aa8/overview" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+          Mở Firebase Console ↗
+        </a>
+      </div>
+
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+        <div class="text-blue-400 font-semibold">// Các tính năng chính đang hoạt động:</div>
+        <ul class="list-disc list-inside space-y-1 text-slate-300">
+          <li><strong>Cloud Firestore:</strong> Lưu trữ dữ liệu thời gian thực được bảo vệ bởi <code>firestore.rules</code>.</li>
+          <li><strong>Firebase Auth:</strong> Hỗ trợ đăng nhập ẩn danh (Anonymous) hoặc Email/Password.</li>
+          <li><strong>Selective Realtime:</strong> Gạt công tắc "Realtime Listener" để lắng nghe <code>onSnapshot</code> tức thời hoặc tắt đi để tiết kiệm hạn mức đọc miễn phí.</li>
+          <li><strong>PWA Service Worker:</strong> Tự động cache các tài nguyên tĩnh để app tải cực nhanh và chạy offline.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

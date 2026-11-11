@@ -1,0 +1,22 @@
+# Firebase App Hosting configuration
+# Uses Node.js buildpack to run SvelteKit SSR natively
+runConfig:
+  minInstances: 0
+  maxInstances: 5
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  - variable: PUBLIC_FIREBASE_API_KEY
+    value: "AIzaSy..."
+  - variable: PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "your-project-id.firebaseapp.com"
+  - variable: PUBLIC_FIREBASE_PROJECT_ID
+    value: "your-project-id"
+  - variable: PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "your-project-id.firebasestorage.app"
+  - variable: PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "123456789012"
+  - variable: PUBLIC_FIREBASE_APP_ID
+    value: "1:123456789012:web:abcdef"

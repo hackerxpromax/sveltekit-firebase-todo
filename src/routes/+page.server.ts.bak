@@ -1,0 +1,138 @@
+import { fail, type Actions } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+import {
+	fetchServerTodos,
+	createServerTodo,
+	toggleServerTodo,
+	deleteServerTodo,
+	getServerFirebase
+} from '$lib/firebase/server';
+import { isFirebaseConfigured } from '$lib/firebase/config';
+import type { Priority, UserProfile } from '$lib/types/todo';
+
+export const load: PageServerLoad = async ({ cookies }) => {
+	const authToken = cookies.get('auth_token') || null;
+	const { currentUser, isDemo } = await getServerFirebase(authToken);
+
+	// Default fallback user ID if not logged in or running demo
+	const effectiveUserId = currentUser?.uid || (authToken ? 'user-demo-123' : 'guest-public-user');
+
+	const userProfile: UserProfile | null = currentUser
+		? {
+				uid: currentUser.uid,
+				email: currentUser.email || null,
+				displayName: currentUser.displayName || currentUser.email?.split('@')[0] || 'User',
+				isAnonymous: currentUser.isAnonymous
+			}
+		: authToken
+			? {
+					uid: effectiveUserId,
+					email: 'demo@example.com',
+					displayName: 'Demo User (SSR)',
+					isAnonymous: false
+				}
+			: null;
+
+	// Server-side initial fetch via FirebaseServerApp
+	const initialTodos = await fetchServerTodos(effectiveUserId, authToken);
+
+	return {
+		initialTodos,
+		user: userProfile,
+		isRealtimeDefault: false, // Architectural principle: Selective realtime!
+		ssrRenderedAt: new Date().toLocaleTimeString('vi-VN', { hour12: false }),
+		firebaseMode: isFirebaseConfigured && !isDemo ? ('real' as const) : ('demo' as const)
+	};
+};
+
+export const actions: Actions = {
+	create: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const title = data.get('title')?.toString().trim();
+		const description = data.get('description')?.toString().trim() || '';
+		const priority = (data.get('priority')?.toString() || 'medium') as Priority;
+		const category = data.get('category')?.toString().trim() || 'General';
+
+		if (!title) {
+			return fail(400, { missingTitle: true, error: 'Tiêu đề không được để trống' });
+		}
+
+		const authToken = cookies.get('auth_token') || null;
+		const { currentUser } = await getServerFirebase(authToken);
+		const userId = currentUser?.uid || 'guest-public-user';
+
+		const newTodo = await createServerTodo(
+			{ title, description, priority, category },
+			userId,
+			authToken
+		);
+
+		return {
+			success: true,
+			action: 'create',
+			createdTodo: newTodo
+		};
+	},
+
+	toggle: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const id = data.get('id')?.toString();
+		const completed = data.get('completed')?.toString() === 'true';
+
+		if (!id) {
+			return fail(400, { missingId: true });
+		}
+
+		const authToken = cookies.get('auth_token') || null;
+		const { currentUser } = await getServerFirebase(authToken);
+		const userId = currentUser?.uid || 'guest-public-user';
+
+		await toggleServerTodo(id, completed, userId, authToken);
+
+		return {
+			success: true,
+			action: 'toggle',
+			id,
+			completed
+		};
+	},
+
+	delete: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const id = data.get('id')?.toString();
+
+		if (!id) {
+			return fail(400, { missingId: true });
+		}
+
+		const authToken = cookies.get('auth_token') || null;
+		const { currentUser } = await getServerFirebase(authToken);
+		const userId = currentUser?.uid || 'guest-public-user';
+
+		await deleteServerTodo(id, userId, authToken);
+
+		return {
+			success: true,
+			action: 'delete',
+			id
+		};
+	},
+
+	setSession: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const token = data.get('token')?.toString();
+
+		if (token) {
+			cookies.set('auth_token', token, {
+				path: '/',
+				httpOnly: false, // readable by client SDK to maintain token refresh
+				sameSite: 'lax',
+				maxAge: 3600
+			});
+		} else {
+			cookies.delete('auth_token', { path: '/' });
+		}
+
+		return { success: true };
+	}
+};
